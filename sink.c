@@ -8,14 +8,18 @@ bool file_sink_init(struct file_sink *fs, char *filename, enum file_sink_mode mo
 	bool append = !!(mode & fsm_append);
 	bool create = !!(mode & fsm_create);
 	bool trunc = !!(mode & fsm_truncate);
+	bool pubr = !!(mode & fsm_public_r);
+	bool pubrw = !!(mode & fsm_public_rw);
 	if (filename == NULL || strcmp(filename, "-") == 0) {
 		fs->fd = STDOUT_FILENO;
 		fs->owns = false;
 	} else {
-		fs->fd = open(filename, O_WRONLY | (append ? O_APPEND : 0) | (create ? O_CREAT : 0) | (trunc ? O_TRUNC : 0));
+		int flags = O_WRONLY | (append ? O_APPEND : 0) | (create ? O_CREAT : 0) | (trunc ? O_TRUNC : 0);
+		int mode = pubrw ? 0666 : pubr ? 0664 : 0660;
+		fs->fd = open(filename, flags, mode);
 		fs->owns = true;
 		if (fs->fd == -1) {
-			log_sysfail("open", "%s, ...", filename);
+			log_sysfail("open", "%s, 0x%x, 0%o", filename, flags, mode);
 		}
 	}
 	return fs->fd != -1;

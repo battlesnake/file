@@ -9,10 +9,11 @@ bool file_source_init(struct file_source *fs, char *filename)
 		fs->fd = STDIN_FILENO;
 		fs->owns = false;
 	} else {
-		fs->fd = open(filename, O_RDONLY);
+		int flags = O_RDONLY;
+		fs->fd = open(filename, flags);
 		fs->owns = true;
 		if (fs->fd == -1) {
-			log_sysfail("open", "%s, ...", filename);
+			log_sysfail("open", "%s, 0x%x", filename, flags);
 		}
 	}
 	return fs->fd != -1;

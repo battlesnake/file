@@ -13,6 +13,13 @@ enum file_sink_mode {
 	fsm_create = 0x02,
 	fsm_truncate = 0x04,
 
+	/* When creating, use mode 664 insead of 660 */
+	fsm_public_r = 0x10,
+
+	/* When creating, use mode 666 insead of 660 */
+	fsm_public_rw = 0x20,
+
+	/* Create new or truncate existing */
 	fsm_empty = fsm_create | fsm_truncate
 };
 
