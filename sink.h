@@ -9,9 +9,11 @@ struct file_sink
 };
 
 enum file_sink_mode {
-	fsm_append,
-	fsm_create,
-	fsm_truncate
+	fsm_append = 0x01,
+	fsm_create = 0x02,
+	fsm_truncate = 0x04,
+
+	fsm_empty = fsm_create | fsm_truncate
 };
 
 bool file_sink_init(struct file_sink *fs, char *filename, enum file_sink_mode mode);
