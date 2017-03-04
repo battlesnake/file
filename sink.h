@@ -8,7 +8,13 @@ struct file_sink
 	bool owns;
 };
 
-bool file_sink_init(struct file_sink *fs, char *filename, bool append);
+enum file_sink_mode {
+	fsm_append,
+	fsm_create,
+	fsm_truncate
+};
+
+bool file_sink_init(struct file_sink *fs, char *filename, enum file_sink_mode mode);
 bool file_sink_use(struct file_sink *fs, int fd);
 void file_sink_destroy(struct file_sink *fs);
 bool file_sink_write_raw(struct file_sink *fs, const void *buf, size_t length);

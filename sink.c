@@ -3,13 +3,16 @@
 
 #include "detail.h"
 
-bool file_sink_init(struct file_sink *fs, char *filename, bool append)
+bool file_sink_init(struct file_sink *fs, char *filename, enum file_sink_mode mode)
 {
+	bool append = !!(mode & fsm_append);
+	bool create = !!(mode & fsm_create);
+	bool trunc = !!(mode & fsm_truncate);
 	if (filename == NULL || strcmp(filename, "-") == 0) {
 		fs->fd = STDOUT_FILENO;
 		fs->owns = false;
 	} else {
-		fs->fd = open(filename, O_WRONLY | (append ? O_APPEND : 0));
+		fs->fd = open(filename, O_WRONLY | (append ? O_APPEND : 0) | (create ? O_CREAT : 0) | (trunc ? O_TRUNC : 0));
 		fs->owns = true;
 		if (fs->fd == -1) {
 			log_sysfail("open", "%s, ...", filename);
