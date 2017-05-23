@@ -16,6 +16,9 @@ bool file_source_init(struct file_source *fs, char *filename)
 			log_sysfail("open", "%s, 0x%x", filename, flags);
 		}
 	}
+	if (fs->fd != -1) {
+		fcntl(fs->fd, F_SETFL, fcntl(fs->fd, F_GETFL) & ~O_NONBLOCK);
+	}
 	return fs->fd != -1;
 }
 

@@ -22,6 +22,9 @@ bool file_sink_init(struct file_sink *fs, char *filename, enum file_sink_mode mo
 			log_sysfail("open", "%s, 0x%x, 0%o", filename, flags, mode);
 		}
 	}
+	if (fs->fd != -1) {
+		fcntl(fs->fd, F_SETFL, fcntl(fs->fd, F_GETFL) & ~O_NONBLOCK);
+	}
 	return fs->fd != -1;
 }
 
