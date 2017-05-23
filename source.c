@@ -48,12 +48,6 @@ static ssize_t do_read(struct file_source *fs, void *buf, size_t max)
 			/* EOF */
 			break;
 		}
-		if (len == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)) {
-			struct pollfd pfd = { .fd = fs->fd, .events = POLLIN, .revents = 0 };
-			if (poll(&pfd, 1, -1) == 1 || errno == EAGAIN) {
-				len = 0;
-			}
-		}
 	} while (off < max && len != -1);
 	if (len == -1) {
 		log_sysfail("read", "");
