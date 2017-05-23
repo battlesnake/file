@@ -1,8 +1,6 @@
 #include <cstd/unix.h>
 #include "sink.h"
 
-#include "detail.h"
-
 bool file_sink_init(struct file_sink *fs, char *filename, enum file_sink_mode mode)
 {
 	bool append = !!(mode & fsm_append);
@@ -22,15 +20,11 @@ bool file_sink_init(struct file_sink *fs, char *filename, enum file_sink_mode mo
 			log_sysfail("open", "%s, 0x%x, 0%o", filename, flags, mode);
 		}
 	}
-	if (fs->fd != -1) {
-		set_blocking(fs->fd);
-	}
 	return fs->fd != -1;
 }
 
 bool file_sink_use(struct file_sink *fs, int fd)
 {
-	set_blocking(fd);
 	fs->fd = fd;
 	fs->owns = false;
 	return fs->fd != -1;

@@ -1,8 +1,6 @@
 #include <cstd/unix.h>
 #include "source.h"
 
-#include "detail.h"
-
 bool file_source_init(struct file_source *fs, char *filename)
 {
 	if (filename == NULL || strcmp(filename, "-") == 0) {
@@ -16,15 +14,11 @@ bool file_source_init(struct file_source *fs, char *filename)
 			log_sysfail("open", "%s, 0x%x", filename, flags);
 		}
 	}
-	if (fs->fd != -1) {
-		set_blocking(fs->fd);
-	}
 	return fs->fd != -1;
 }
 
 bool file_source_use(struct file_source *fs, int fd)
 {
-	set_blocking(fd);
 	fs->fd = fd;
 	fs->owns = true;
 	return fs->fd != -1;
