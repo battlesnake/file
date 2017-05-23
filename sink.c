@@ -23,7 +23,7 @@ bool file_sink_init(struct file_sink *fs, char *filename, enum file_sink_mode mo
 		}
 	}
 	if (fs->fd != -1) {
-		fcntl(fs->fd, F_SETFL, fcntl(fs->fd, F_GETFL) & ~O_NONBLOCK);
+		set_blocking(fs->fd);
 	}
 	return fs->fd != -1;
 }
